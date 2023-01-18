@@ -49,6 +49,7 @@ function Board(props) {
 function Game() {
   const [history, setHistory] = React.useState([{squares: Array(9).fill(null)}]);
   const [xIsNext, set_xIsNext] = React.useState(true);  
+  const [stepNumber, setStepNumber] = React.useState(0);  
   const [current, setCurrent] = React.useState(history[history.length-1]);
   
   const winner = calculateWinner(current.squares);
@@ -63,12 +64,25 @@ function Game() {
   // console.log(current);
   React.useEffect(() => {
     debugger
-    setCurrent(history[history.length-1])
-  }, [history]); // Only re-run the effect if count changes
+    setCurrent(history[stepNumber])
+    
+  }, [history,stepNumber]); // Only re-run the effect if count changes
+
+  const moves = history.map((step,move)=>{
+    const desc = move ?
+      'Go to move #' + move:
+      'Go to game start';
+      return(
+        <li key={move}>
+          <button onClick={() => jumpTo(move)}>{desc}</button>
+        </li>
+      );
+  });
 
   function handleClick(i)
   {
     // const his = history;
+    setHistory(history.slice(0,stepNumber+1));
     setCurrent(history[history.length-1]);
     const squares = current.squares.slice();
     
@@ -79,10 +93,21 @@ function Game() {
     const x=history.concat([{squares: squares}]);
     setHistory(x)    
     // setCurrent(x[x.length-1]);
-    
+    setStepNumber(history.length);
     set_xIsNext(!xIsNext);
     debugger
     // setSquares(squares);
+  }
+
+  function jumpTo(step){
+    setStepNumber(step);
+    if(step%2)
+    {
+      set_xIsNext(0)
+    }
+    else{
+      set_xIsNext(1)
+    }
   }
   return (
     <div className="game">
@@ -91,7 +116,7 @@ function Game() {
       </div>
       <div className="game-info">
         <div>{status}</div>
-        <ol>{/* TODO */}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
   );
