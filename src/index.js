@@ -11,61 +11,95 @@ function Square(props) {
   );
 }
 
-function Board() {
-  
-  const [squares, setSquares] = React.useState(Array(9).fill(null));
-  const [xIsNext, set_xIsNext] = React.useState(true);
-  
-  function handleClick(i)
-  {
-    const s = squares.slice();
+function Board(props) {
 
-    if(calculateWinner(squares) || squares[i]){
-      return;
-    }
-    s[i] = xIsNext ? "X" : "O";
-    set_xIsNext(!xIsNext);
-    setSquares(s);
-  }
+  // alert(props);
+  debugger
   
-  const winner = calculateWinner(squares);
-  let status;
+  // const [squares, setSquares] = React.useState(Array(9).fill(null));
+  // const [xIsNext, set_xIsNext] = React.useState(true);
+  
+  
+  // const winner = calculateWinner(squares);
+  // let status;
+  
+  // if(winner){
+  //   status = 'Winner: ' + winner; 
+  // }else{
+  //   status = "Next player:  "+ (xIsNext ? "X" : "O");
+  // }
 
-  if(winner){
-   status = 'Winner: ' + winner; 
-  }else{
-    status = "Next player:  "+ (xIsNext ? "X" : "O");
-  }
   return (
     <div>
-      <div className="status">{status}</div>
+      {/* <div className="status">{status}</div> */}
       <div className="board-row">
-        <Square value={squares[0]} onClick={() => handleClick(0)}/>
-        <Square value={squares[1]} onClick={() => handleClick(1)}/>
-        <Square value={squares[2]} onClick={() => handleClick(2)}/>
+        <Square value={props.squares[0]} onClick={() => props.onClick(0)}/>
+        <Square value={props.squares[1]} onClick={() => props.onClick(1)}/>
+        <Square value={props.squares[2]} onClick={() => props.onClick(2)}/>
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onClick={() => handleClick(3)}/>
-        <Square value={squares[4]} onClick={() => handleClick(4)}/>
-        <Square value={squares[5]} onClick={() => handleClick(5)}/>
+        <Square value={props.squares[3]} onClick={() => props.onClick(3)}/>
+        <Square value={props.squares[4]} onClick={() => props.onClick(4)}/>
+        <Square value={props.squares[5]} onClick={() => props.onClick(5)}/>
       </div>
       <div className="board-row">
-        <Square value={squares[6]} onClick={() => handleClick(6)}/>
-        <Square value={squares[7]} onClick={() => handleClick(7)}/>
-        <Square value={squares[8]} onClick={() => handleClick(8)}/>
+        <Square value={props.squares[6]} onClick={() => props.onClick(6)}/>
+        <Square value={props.squares[7]} onClick={() => props.onClick(7)}/>
+        <Square value={props.squares[8]} onClick={() => props.onClick(8)}/>
       </div>
     </div>
   );
 }
 
 function Game() {
+  const [history, setHistory] = React.useState([{squares: Array(9).fill(null)}]);
+  const [xIsNext, set_xIsNext] = React.useState(true);
+  
+  
+  // const his = history;
+  
+  // console.log(current);
+  
+  function handleClick(i)
+  {
+    // const his = history;
+    setCurrent(history[history.length-1]);
+    const squares = current.squares.slice();
+    
+    if(calculateWinner(squares) || squares[i]){
+      return;
+    }
+    squares[i] = xIsNext ? "X" : "O";
+    
+    setHistory(history.concat([{squares: squares}]))
+    
+
+    console.log(current)
+    console.log(history)
+    debugger
+    
+    set_xIsNext(!xIsNext);
+    // setSquares(squares);
+  }
+  
+  const [current, setCurrent] = React.useState(history[history.length-1]);
+  
+  // debugger;
+  const winner = calculateWinner(current.squares);
+  
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board squares={current.squares} onClick={(i) => handleClick(i)} />
       </div>
       <div className="game-info">
-        <div>{/* status */}</div>
+        <div>{status}</div>
         <ol>{/* TODO */}</ol>
       </div>
     </div>
