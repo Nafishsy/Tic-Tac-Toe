@@ -23,12 +23,7 @@ function Board(props) {
   // const winner = calculateWinner(squares);
   // let status;
   
-  // if(winner){
-  //   status = 'Winner: ' + winner; 
-  // }else{
-  //   status = "Next player:  "+ (xIsNext ? "X" : "O");
-  // }
-
+  
   return (
     <div>
       {/* <div className="status">{status}</div> */}
@@ -53,13 +48,24 @@ function Board(props) {
 
 function Game() {
   const [history, setHistory] = React.useState([{squares: Array(9).fill(null)}]);
-  const [xIsNext, set_xIsNext] = React.useState(true);
+  const [xIsNext, set_xIsNext] = React.useState(true);  
+  const [current, setCurrent] = React.useState(history[history.length-1]);
   
+  const winner = calculateWinner(current.squares);
+  debugger
+  let status;
   
-  // const his = history;
-  
+  if(winner){
+    status = 'Winner: ' + winner; 
+  }else{
+    status = "Next player:  "+ (xIsNext ? "X" : "O");
+  }
   // console.log(current);
-  
+  React.useEffect(() => {
+    debugger
+    setCurrent(history[history.length-1])
+  }, [history]); // Only re-run the effect if count changes
+
   function handleClick(i)
   {
     // const his = history;
@@ -70,28 +76,13 @@ function Game() {
       return;
     }
     squares[i] = xIsNext ? "X" : "O";
-    
-    setHistory(history.concat([{squares: squares}]))
-    
-
-    console.log(current)
-    console.log(history)
-    debugger
+    const x=history.concat([{squares: squares}]);
+    setHistory(x)    
+    // setCurrent(x[x.length-1]);
     
     set_xIsNext(!xIsNext);
+    debugger
     // setSquares(squares);
-  }
-  
-  const [current, setCurrent] = React.useState(history[history.length-1]);
-  
-  // debugger;
-  const winner = calculateWinner(current.squares);
-  
-  let status;
-  if (winner) {
-    status = 'Winner: ' + winner;
-  } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
   return (
     <div className="game">
